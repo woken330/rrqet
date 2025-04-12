@@ -1,0 +1,92 @@
+local player = game.Players.LocalPlayer
+local teleportPos = Vector3.new(834, 260, -1121)
+
+local teleporting = false
+local paused = false
+local timer = 0
+
+-- Create the GUI
+local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+screenGui.ResetOnSpawn = false
+
+local frame = Instance.new("Frame", screenGui)
+frame.Size = UDim2.new(0, 200, 0, 200)
+frame.Position = UDim2.new(0.5, -100, 0.5, -100)
+frame.BackgroundColor3 = Color3.new(1, 1, 1)
+frame.Active = true
+frame.Draggable = true
+
+-- Create buttons and timer label
+local startButton = Instance.new("TextButton", frame)
+startButton.Text = "Start"
+startButton.Size = UDim2.new(1, -10, 0, 30)
+startButton.Position = UDim2.new(0, 5, 0, 5)
+
+local stopButton = Instance.new("TextButton", frame)
+stopButton.Text = "Stop"
+stopButton.Size = UDim2.new(1, -10, 0, 30)
+stopButton.Position = UDim2.new(0, 5, 0, 40)
+
+local pauseButton = Instance.new("TextButton", frame)
+pauseButton.Text = "Pause"
+pauseButton.Size = UDim2.new(1, -10, 0, 30)
+pauseButton.Position = UDim2.new(0, 5, 0, 75)
+
+local donateButton = Instance.new("TextButton", frame)
+donateButton.Text = "Donate"
+donateButton.Size = UDim2.new(1, -10, 0, 30)
+donateButton.Position = UDim2.new(0, 5, 0, 110)
+
+local timerLabel = Instance.new("TextLabel", frame)
+timerLabel.Text = "Time: 0.0s"
+timerLabel.Size = UDim2.new(1, -10, 0, 30)
+timerLabel.Position = UDim2.new(0, 5, 0, 145)
+timerLabel.BackgroundTransparency = 1
+timerLabel.TextScaled = true
+
+-- Teleport function
+local function startTeleporting()
+	while teleporting do
+		if not paused then
+			local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+			if hrp then
+				hrp.CFrame = CFrame.new(teleportPos)
+			end
+			timer = timer + 0.01
+			timerLabel.Text = string.format("Time: %.2fs", timer)
+		end
+		wait(0.1)
+	end
+end
+
+-- Start button
+startButton.MouseButton1Click:Connect(function()
+	if not teleporting then
+		teleporting = true
+		paused = false
+		timer = 0
+		pauseButton.Text = "Pause"
+		startTeleporting()
+	end
+end)
+
+-- Stop button
+stopButton.MouseButton1Click:Connect(function()
+	teleporting = false
+	timerLabel.Text = "Time: 0.0s"
+end)
+
+-- Pause button
+pauseButton.MouseButton1Click:Connect(function()
+	if teleporting then
+		paused = not paused
+		pauseButton.Text = paused and "Unpause" or "Pause"
+	end
+end)
+
+-- Donate button (teleport to Donate game)
+donateButton.MouseButton1Click:Connect(function()
+	local TeleportService = game:GetService("TeleportService")
+	local placeId = 81475112472259
+	TeleportService:Teleport(placeId, player)
+end)
