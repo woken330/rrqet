@@ -5,18 +5,16 @@ local teleporting = false
 local paused = false
 local timer = 0
 
--- Create the GUI
 local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
 screenGui.ResetOnSpawn = false
 
 local frame = Instance.new("Frame", screenGui)
-frame.Size = UDim2.new(0, 200, 0, 200)
-frame.Position = UDim2.new(0.5, -100, 0.5, -100)
+frame.Size = UDim2.new(0, 200, 0, 170)
+frame.Position = UDim2.new(0.5, -100, 0.5, -85)
 frame.BackgroundColor3 = Color3.new(1, 1, 1)
 frame.Active = true
 frame.Draggable = true
 
--- Create buttons and timer label
 local startButton = Instance.new("TextButton", frame)
 startButton.Text = "Start"
 startButton.Size = UDim2.new(1, -10, 0, 30)
@@ -32,19 +30,13 @@ pauseButton.Text = "Pause"
 pauseButton.Size = UDim2.new(1, -10, 0, 30)
 pauseButton.Position = UDim2.new(0, 5, 0, 75)
 
-local donateButton = Instance.new("TextButton", frame)
-donateButton.Text = "Donate"
-donateButton.Size = UDim2.new(1, -10, 0, 30)
-donateButton.Position = UDim2.new(0, 5, 0, 110)
-
 local timerLabel = Instance.new("TextLabel", frame)
 timerLabel.Text = "Time: 0.0s"
 timerLabel.Size = UDim2.new(1, -10, 0, 30)
-timerLabel.Position = UDim2.new(0, 5, 0, 145)
+timerLabel.Position = UDim2.new(0, 5, 0, 110)
 timerLabel.BackgroundTransparency = 1
 timerLabel.TextScaled = true
 
--- Teleport function
 local function startTeleporting()
 	while teleporting do
 		if not paused then
@@ -59,7 +51,6 @@ local function startTeleporting()
 	end
 end
 
--- Start button
 startButton.MouseButton1Click:Connect(function()
 	if not teleporting then
 		teleporting = true
@@ -70,23 +61,14 @@ startButton.MouseButton1Click:Connect(function()
 	end
 end)
 
--- Stop button
 stopButton.MouseButton1Click:Connect(function()
 	teleporting = false
 	timerLabel.Text = "Time: 0.0s"
 end)
 
--- Pause button
 pauseButton.MouseButton1Click:Connect(function()
 	if teleporting then
 		paused = not paused
 		pauseButton.Text = paused and "Unpause" or "Pause"
 	end
-end)
-
--- Donate button (teleport to Donate game)
-donateButton.MouseButton1Click:Connect(function()
-	local TeleportService = game:GetService("TeleportService")
-	local placeId = 81475112472259
-	TeleportService:Teleport(placeId, player)
 end)
